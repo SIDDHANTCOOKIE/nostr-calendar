@@ -12,7 +12,7 @@ import { useIntl } from "react-intl";
 interface ILoadState {
   event: ICalendarEvent | null;
   fetchState: "loading" | "fetched" | "error";
-  error: typeof Error | null;
+  error: Error | null;
 }
 
 const getInitialLoadState = (): ILoadState => ({
@@ -21,7 +21,7 @@ const getInitialLoadState = (): ILoadState => ({
   error: null,
 });
 
-const ErrorRenderer = () => {
+const ErrorRenderer = ({ error }: { error: Error }) => {
   const intl = useIntl();
   return (
     <Box
@@ -34,6 +34,12 @@ const ErrorRenderer = () => {
     >
       <Alert severity="error">
         {intl.formatMessage({ id: "event.loadError" })}
+        {error.message && (
+          <>
+            <br />
+            <small>{error.message}</small>
+          </>
+        )}
       </Alert>
     </Box>
   );
@@ -86,8 +92,8 @@ export const ViewEventPage = () => {
       .catch((e) => {
         updateCalendarEventLoadState((state) => ({
           ...state,
-          error: Error,
-          fetchState: "fetched",
+          error: e instanceof Error ? e : new Error(String(e)),
+          fetchState: "error",
         }));
         console.error(e);
       });
@@ -106,7 +112,9 @@ export const ViewEventPage = () => {
         {calendarEventLoadState.fetchState === "loading" ? (
           <LoaderRenderer />
         ) : null}
-        {calendarEventLoadState.error !== null ? <ErrorRenderer /> : null}
+        {calendarEventLoadState.error !== null ? (
+          <ErrorRenderer error={calendarEventLoadState.error} />
+        ) : null}
         {calendarEventLoadState.event !== null ? (
           <CalendarEventView
             event={calendarEventLoadState.event}
