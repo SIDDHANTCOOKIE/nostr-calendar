@@ -19,7 +19,10 @@ import {
 import RefreshIcon from "@mui/icons-material/Refresh";
 import CloseIcon from "@mui/icons-material/Close";
 import CircleIcon from "@mui/icons-material/Circle";
-import type { ICalendarList } from "../utils/calendarListTypes";
+import {
+  DEFAULT_NOTIFICATION_PREFERENCE,
+  type ICalendarList,
+} from "../utils/calendarListTypes";
 import { useIntl } from "react-intl";
 import type { NotificationPreference } from "../utils/types";
 
@@ -67,7 +70,7 @@ export function CalendarManageDialog({
   const [color, setColor] = useState(calendar?.color || PRESET_COLORS[0]);
   const [notificationPreference, setNotificationPreference] =
     useState<NotificationPreference>(
-      calendar?.notificationPreference || "enabled",
+      calendar?.notificationPreference ?? DEFAULT_NOTIFICATION_PREFERENCE,
     );
   const intl = useIntl();
   const theme = useTheme();

@@ -28,7 +28,10 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { DatePicker } from "./DatePicker";
 import { useCalendarLists } from "../stores/calendarLists";
 import { CalendarManageDialog } from "./CalendarManageDialog";
-import type { ICalendarList } from "../utils/calendarListTypes";
+import {
+  DEFAULT_NOTIFICATION_PREFERENCE,
+  type ICalendarList,
+} from "../utils/calendarListTypes";
 import { useIntl } from "react-intl";
 import { useTimeBasedEvents } from "../stores/events";
 
@@ -71,7 +74,8 @@ export function CalendarSidebar({ onClose }: CalendarSidebarProps) {
   }) => {
     if (editingCalendar) {
       const preferenceChanged =
-        (editingCalendar.notificationPreference || "enabled") !==
+        (editingCalendar.notificationPreference ??
+          DEFAULT_NOTIFICATION_PREFERENCE) !==
         data.notificationPreference;
 
       await updateCalendar({ ...editingCalendar, ...data });
